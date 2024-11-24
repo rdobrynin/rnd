@@ -1,0 +1,123 @@
+services:
+  reverse-proxy:
+    image: traefik:v2.10
+    container_name: "reverse-proxy"
+    restart: always
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "3306:3306"
+    networks:
+      - backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/traefik.yml:ro
+    labels:
+      - traefik.enable=true
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+    networks:
+      - backend
+    container_name: backend
+    command: bash -c "yarn run setup:dev"
+    ports:
+      - "3002:3002"
+      - "9229:9229"
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`backend-api.localhost`)"
+      - "traefik.http.services.app.loadbalancer.server.port=3002"
+    depends_on:
+      - reverse-proxy
+      - db
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    container_name: frontend
+    networks:
+      - backend
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    command: sh -c "yarn install && yarn dev"
+    ports:
+      - "5173:5173"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`app.localhost`)"
+    depends_on:
+      - reverse-proxy
+
+  db:
+    image: mariadb:11.1
+    container_name: mariadb
+    networks:
+      - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.db.rule=HostSNI(`*`)"
+      - "traefik.tcp.services.db.loadbalancer.server.port=3306"
+      - "traefik.tcp.routers.db.entrypoints=mysql"
+    restart: always
+    env_file:
+      - ./backend/.env
+    environment:
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_ROOT_USER=root
+      - MARIADB_DATABASE=mariadb
+      - MARIADB_USER=mariadb
+      - MARIADB_PASSWORD=mariadb
+    volumes:
+      - mariadb_volume:/var/lib/mysql
+    depends_on:
+      - reverse-proxy
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    networks:
+      - backend
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+    restart: always
+    ports:
+      - 7777:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`dbClient.localhost`)"
+
+  redis:
+    container_name: redis
+    image: redis:6.0.9-alpine
+    restart: always
+    networks:
+      - backend
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/data
+
+volumes:
+  mariadb_volume:
+    driver: local
+  redis:
+    driver: local
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
