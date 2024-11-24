@@ -1,10 +1,10 @@
-import { IsDate, IsUUID } from 'class-validator';
+import {IsDate, IsNumber} from 'class-validator';
 
 import { IAbstractEntity } from '../entites/abstract.entity';
 
 export class AbstractDto {
-  @IsUUID()
-  id: string;
+  @IsNumber()
+  id: number;
 
   @IsDate()
   createdAt: Date;
