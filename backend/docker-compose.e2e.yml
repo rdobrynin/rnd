@@ -1,0 +1,41 @@
+services:
+  backend-api:
+    image: ghcr.io/event-panel/event-panel-web:${SHA_TAG}
+    command: yarn run start:dev
+    container_name: backend-api
+    restart: unless-stopped
+    networks:
+      - backend
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mariadb
+      - redis
+
+  mariadb:
+    image: mariadb:11.1
+    container_name: mariadb
+    networks:
+      - backend
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MARIADB_ROOT_USER=${DB_ROOT_USER}
+      - MARIADB_DATABASE=${DB_NAME}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  redis:
+    image: redis:6.0.9-alpine
+    restart: always
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge

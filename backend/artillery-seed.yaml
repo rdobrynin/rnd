@@ -1,0 +1,135 @@
+config:
+  target: "{{ $processEnvironment.API_URL }}"
+  tls:
+    rejectUnauthorized: true
+  plugins:
+    faker:
+      locale: en_US
+    apdex: {}
+  variables:
+    name: "$faker.name.firstName"
+    description: "$faker.lorem.lines(2)"
+  phases:
+    - duration: 20
+      arrivalRate: 5
+      rampTo: 5
+      name: Warm up phase
+    - duration: 30
+      arrivalRate: 5
+      rampTo: 10
+      name: Ramp up load
+  apdex:
+    threshold: 100
+scenarios:
+  - flow:
+      - log: "Getting token"
+      - post:
+              url: '/auth/signin'
+              json:
+                lastName: 'Dummy'
+                email: 'admin@eventpanel.com'
+                password: '11111111'
+              capture:
+                json: "$.accessToken"
+                as: access_token
+              expect:
+                - statusCode: 200
+      - log: "Create workspace"
+      - post:
+          headers:
+            Authorization: 'Bearer {{ access_token }}'
+          url: "/workspaces/create"
+          json:
+            name: '{{ name }}'
+          capture:
+            json: "$.id"
+            as: workspaceReferenceId
+          expect:
+            - statusCode: 201
+      - log: "Create event"
+      - post:
+          headers:
+            Authorization: 'Bearer {{ access_token }}'
+          url: "/events/create"
+          json:
+            workspaceReferenceId: '{{ workspaceReferenceId }}'
+            name: '{{ name }}'
+            description: '{{ description }}'
+          capture:
+            json: "$.id"
+            as: eventId
+          expect:
+            - statusCode: 201
+      - log: "Create category"
+      - post:
+          headers:
+            Authorization: 'Bearer {{ access_token }}'
+          url: "/categories/create"
+          json:
+            workspaceReferenceId: '{{ workspaceReferenceId }}'
+            name: '{{ name }}'
+            description: '{{ description }}'
+          expect:
+            - statusCode: 201
+      - log: "Create property"
+      - post:
+          headers:
+            Authorization: 'Bearer {{ access_token }}'
+          url: "/properties/create"
+          json:
+            workspaceReferenceId: '{{ workspaceReferenceId }}'
+            name: '{{ name }}'
+            description: '{{ description }}'
+            values: '"values": ["string"]'
+          capture:
+            json: "$.id"
+            as: eventId
+          expect:
+            - statusCode: 201
+      - log: "Create property type"
+      - post:
+          headers:
+            Authorization: 'Bearer {{ access_token }}'
+          url: "/property-types/create"
+          json:
+            workspaceReferenceId: '{{ workspaceReferenceId }}'
+            name: '{{ name }}'
+          expect:
+            - statusCode: 201
+      - log: "Create source"
+      - post:
+          headers:
+            Authorization: 'Bearer {{ access_token }}'
+          url: "/sources/create"
+          json:
+            workspaceReferenceId: '{{ workspaceReferenceId }}'
+            name: '{{ name }}'
+          capture:
+            json: "$.id"
+            as: sourceId
+          expect:
+            - statusCode: 201
+      - log: "Create source type"
+      - post:
+          headers:
+            Authorization: 'Bearer {{ access_token }}'
+          url: "/source-types/create"
+          json:
+            sourceReferenceId: '{{ sourceId }}'
+            name: '{{ name }}'
+            color: '#FF000000'
+            type: 'IOS'
+          expect:
+            - statusCode: 201
+      - log: "Create source type"
+      - post:
+          headers:
+            Authorization: 'Bearer {{ access_token }}'
+          url: "/tags/create"
+          json:
+            workspaceReferenceId: '{{ workspaceReferenceId }}'
+            name: '{{ name }}'
+            description: '{{ description }}'
+            color: '#FF000000'
+          expect:
+            - statusCode: 201

@@ -1,0 +1,15 @@
+api:
+  insecure: true
+
+log:
+  level: DEBUG
+
+providers:
+  docker:
+    exposedByDefault: false
+
+entrypoints:
+  mysql:
+    address: :3306
+  http:
+    address: :80

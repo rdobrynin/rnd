@@ -1,0 +1,30 @@
+:root {
+  --frosty-1: $secondary-color-light;
+  --neutrals-gray-light-50: #1e1e1e;
+}
+
+// colors
+$primary: #004eff;
+$primary-light-50: #80a6ff;
+$primary-light-20: #ccdcff;
+$success: #17e59b;
+$secondary-color: #ff6e1e;
+$secondary-color-light: #eaeae9;
+$danger: #ff5a5a;
+$secondary: #875aff;
+$black-color: #1e1e1e;
+$neutral-gray-dark: #777;
+$neutral-gray-dark-50: rgb(119 119 119 / 50%);
+$text-gray: #c2c4d1;
+$bg-color: #c2c4d1;
+$bg-cards: $secondary-color-light;
+$neutral-gray-light: #f1f1f1;
+$neutral-gray-light-50: rgb(234 234 233 / 50%);
+$neutral-gray-light-20: rgb(234 234 233 / 20%);
+$white: #fff;
+$width: 1200px;
+$max-width: 1440px;
+
+// properties
+$border-radius: 8px;
+$box-shadow: 0 2px 8px 0 rgb(0 0 0 / 20%), 0 0 0 0 rgb(0 0 0 / 8%);

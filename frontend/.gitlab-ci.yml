@@ -1,0 +1,198 @@
+image: node:18-alpine
+
+stages:
+  - quality
+  - unit
+  - build
+  - deploy
+
+Code-Style:
+  stage: quality
+  before_script:
+    - yarn install
+  script:
+    - echo "Running linter"
+    - yarn lint
+    - echo "linter has been passed"
+
+Style-Lint:
+  stage: quality
+  before_script:
+    - yarn install
+  script:
+    - echo "Running linter"
+    - yarn stylelint
+    - echo "linter has been passed"
+    - yarn prettier-check
+    - echo "Prettier has been passed"
+  needs:
+    - Code-Style
+
+Unit-Tests:
+  stage: unit
+  interruptible: true
+  before_script:
+    - yarn install
+  script:
+    - echo "Running unit tests... This will take time"
+    - yarn test
+    - echo "Code coverage"
+  needs:
+    - Style-Lint
+
+Build-Development:
+  stage: build
+  interruptible: true
+  environment:
+    name: development
+  before_script:
+    - echo VITE_GOOGLE_OAUTH_CLIENT_ID=$VITE_GOOGLE_OAUTH_CLIENT_ID > .env
+    - echo VITE_GOOGLE_OAUTH_CLIENT_SECRET=$VITE_GOOGLE_OAUTH_CLIENT_SECRET >> .env
+    - echo VITE_GOOGLE_OAUTH_REDIRECT=$VITE_GOOGLE_OAUTH_REDIRECT >> .env
+    - echo TOAST_DELAY=$TOAST_DELAY >> .env
+    - echo VITE_API_URL=$VITE_API_URL >> .env
+    - echo VITE_DEFAULT_VOICE_LANGUAGE=$VITE_DEFAULT_VOICE_LANGUAGE >> .env
+    - echo VITE_IS_PUBLIC=$VITE_IS_PUBLIC >> .env
+    - echo VITE_MAX_CHAR_HEAD_MESSAGE_TEXT_LIMIT=$VITE_MAX_CHAR_HEAD_MESSAGE_TEXT_LIMIT >> .env
+    - echo VITE_NODE_ENV=$VITE_NODE_ENV >> .env
+    - echo VITE_SENTRY_DNS=$VITE_SENTRY_DNS >> .env
+    - echo VITE_BUNDLE_VERSION=$CI_COMMIT_SHORT_SHA >> .env
+    - yarn install
+  script:
+    - yarn build
+  artifacts:
+    name: '$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME'
+    paths:
+      - dist
+  when: on_success
+  needs:
+    - Unit-Tests
+
+Build-Staging:
+  stage: build
+  interruptible: true
+  environment:
+    name: staging
+  before_script:
+    - echo VITE_GOOGLE_OAUTH_CLIENT_ID=$VITE_GOOGLE_OAUTH_CLIENT_ID > .env
+    - echo VITE_GOOGLE_OAUTH_CLIENT_SECRET=$VITE_GOOGLE_OAUTH_CLIENT_SECRET >> .env
+    - echo VITE_GOOGLE_OAUTH_REDIRECT=$VITE_GOOGLE_OAUTH_REDIRECT >> .env
+    - echo TOAST_DELAY=$TOAST_DELAY >> .env
+    - echo VITE_API_URL=$VITE_API_URL >> .env
+    - echo VITE_DEFAULT_VOICE_LANGUAGE=$VITE_DEFAULT_VOICE_LANGUAGE >> .env
+    - echo VITE_IS_PUBLIC=$VITE_IS_PUBLIC >> .env
+    - echo VITE_MAX_CHAR_HEAD_MESSAGE_TEXT_LIMIT=$VITE_MAX_CHAR_HEAD_MESSAGE_TEXT_LIMIT >> .env
+    - echo VITE_NODE_ENV=$VITE_NODE_ENV >> .env
+    - echo VITE_SENTRY_DNS=$VITE_SENTRY_DNS >> .env
+    - echo VITE_BUNDLE_VERSION=$CI_COMMIT_SHORT_SHA >> .env
+    - yarn install
+  script:
+    - yarn build
+  artifacts:
+    name: '$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME'
+    paths:
+      - dist
+  when: manual
+  needs:
+    - Unit-Tests
+  only:
+    - master
+
+Build-Production:
+  stage: build
+  interruptible: true
+  environment:
+    name: production
+  before_script:
+    - echo VITE_GOOGLE_OAUTH_CLIENT_ID=$VITE_GOOGLE_OAUTH_CLIENT_ID > .env
+    - echo VITE_GOOGLE_OAUTH_CLIENT_SECRET=$VITE_GOOGLE_OAUTH_CLIENT_SECRET >> .env
+    - echo VITE_GOOGLE_OAUTH_REDIRECT=$VITE_GOOGLE_OAUTH_REDIRECT >> .env
+    - echo TOAST_DELAY=$TOAST_DELAY >> .env
+    - echo VITE_API_URL=$VITE_API_URL >> .env
+    - echo VITE_DEFAULT_VOICE_LANGUAGE=$VITE_DEFAULT_VOICE_LANGUAGE >> .env
+    - echo VITE_IS_PUBLIC=$VITE_IS_PUBLIC >> .env
+    - echo VITE_MAX_CHAR_HEAD_MESSAGE_TEXT_LIMIT=$VITE_MAX_CHAR_HEAD_MESSAGE_TEXT_LIMIT >> .env
+    - echo VITE_NODE_ENV=$VITE_NODE_ENV >> .env
+    - echo VITE_SENTRY_DNS=$VITE_SENTRY_DNS >> .env
+    - echo VITE_BUNDLE_VERSION=$CI_COMMIT_SHORT_SHA >> .env
+    - yarn install
+  script:
+    - yarn build
+  artifacts:
+    name: '$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME'
+    paths:
+      - dist
+  when: manual
+  needs:
+    - Unit-Tests
+  only:
+    - develop
+
+Development:
+  image:
+    name: amazon/aws-cli:2.2.18
+    entrypoint: ['']
+  stage: deploy
+  environment:
+    name: development
+  before_script:
+    - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+    - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+    - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+    - export AWS_REGION=$AWS_DEFAULT_REGION
+    - export S3_BUCKET=$S3_BUCKET
+  script:
+    - aws --version
+    - ls -la
+    - cat dist/index.html
+    - aws s3 sync dist $S3_BUCKET --delete
+  when: manual
+  needs:
+    - job: Build-Development
+      artifacts: true
+
+Staging:
+  image:
+    name: amazon/aws-cli:2.2.18
+    entrypoint: ['']
+  stage: deploy
+  environment:
+    name: staging
+  before_script:
+    - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+    - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+    - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+    - export AWS_REGION=$AWS_DEFAULT_REGION
+    - export S3_BUCKET=$S3_BUCKET
+  script:
+    - aws --version
+    - aws s3 sync dist $S3_BUCKET --delete
+  when: manual
+  needs:
+    - job: Build-Staging
+      artifacts: true
+  only:
+    - master
+
+Production:
+  image:
+    name: amazon/aws-cli:2.2.18
+    entrypoint: ['']
+  stage: deploy
+  environment:
+    name: production
+  before_script:
+    - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+    - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+    - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+    - export AWS_REGION=$AWS_DEFAULT_REGION
+    - export S3_BUCKET=$S3_BUCKET
+  script:
+    - aws --version
+    - aws s3 sync dist $S3_BUCKET --delete
+  when: manual
+  needs:
+    - job: Build-Production
+      artifacts: true
+  only:
+    - master
