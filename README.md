@@ -13,4 +13,4 @@ How to launch
 or run
 
 - `make run` - ti start and up all containers with migrations
-- `makwe down` - stop all containers
+- `make down` - stop all containers
