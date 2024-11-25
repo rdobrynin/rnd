@@ -10,7 +10,11 @@ How to launch
 
 1. `docker comopose up -d`
 2. `docker exec -it backend bash` and then run `yarn migration:run`
+
 or run
 
-- `make run` - ti start and up all containers with migrations
+- `make run` - start and up all containers with migrations
 - `make down` - stop all containers
+
+tests
+- `make test` - run unit tests
