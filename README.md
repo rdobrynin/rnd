@@ -18,3 +18,22 @@ or run
 
 tests
 - `make test` - run unit tests
+
+### URLs
+
+#### Swagger
+http://localhost:3002/swagger
+
+#### API
+http://localhost:3002/api
+
+#### FE
+http://localhost:5173
+
+#### REDIS COMMANDER
+http://localhost:8081
+
+
+#### DB Client
+http://localhost:7777
+
