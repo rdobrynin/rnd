@@ -110,6 +110,23 @@ services:
     volumes:
       - redis:/data
 
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: ghcr.io/joeferner/redis-commander:latest
+    networks:
+      - backend
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - '8081:8081'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`redis.localhost`)"
+      - "traefik.http.services.app.loadbalancer.server.port=8081"
+    depends_on:
+      - redis
+
 volumes:
   mariadb_volume:
     driver: local
