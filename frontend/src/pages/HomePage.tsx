@@ -43,7 +43,7 @@ export const HomePage: FC = () => {
         e.preventDefault();
         setFrom(to);
         setTo(from);
-        toggle(from, to);
+        toggle(to, from);
     }
 
     console.log(fromSet)
