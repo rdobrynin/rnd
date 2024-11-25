@@ -9,7 +9,7 @@ also it built upon Express engine, however if needed, can be build upon Fastify 
 How to launch
 
 1. `docker comopose up -d`
-2. `docker exec -it backend bash` and then run `yarn migration:run`
+2. `docker exec -it backend sh` and then run `yarn migration:run`
 
 or run
 
