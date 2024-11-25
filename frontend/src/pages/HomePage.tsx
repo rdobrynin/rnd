@@ -94,7 +94,7 @@ export const HomePage: FC = () => {
             <div className="d-flex flex-row bd-highlight mb-3 align-content-cente align-items-center justify-content-center my-4">
               <div style={{width: '100px'}}>{selectedRateData.from}</div>
               <div>
-                <button className='btn btn-primary mx-4' onClick={convert}>
+                <button className='btn btn-primary mx-4' onClick={convert} disabled={selectedRateLoading}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                        className="bi bi-arrow-left-right" viewBox="0 0 16 16">
                     <path fillRule="evenodd"
