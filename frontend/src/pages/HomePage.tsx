@@ -141,7 +141,7 @@ export const HomePage: FC = () => {
                         <span style={{
                             fontSize: '37px',
                             fontWeight: 600
-                        }}>{Number(selectedRateData.price).toFixed(2)}</span>
+                        }}>{Number(selectedRateData.price).toFixed(3)}</span>
                     </div>
 
                 </>
