@@ -16,6 +16,9 @@ or run
 - `make run` - start and up all containers with migrations
 - `make down` - stop all containers
 
+DB migrate
+- `migrate_db` - run migrations
+
 tests
 - `make test` - run unit tests
 
