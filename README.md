@@ -3,7 +3,7 @@
 ### Chosen NestJS
 
 Preferred NestJS, it has more readable and predictable code, 
-also it built upon Express engine, however if needed, can be build upon Fastify in main.ts `await NestFactory.create`
+also it built upon Express engine, however if needed, can be built upon Fastify in main.ts `await NestFactory.create`
 
 ### How to launch
 
@@ -12,7 +12,10 @@ also it built upon Express engine, however if needed, can be build upon Fastify 
 
 or run
 
-- `make run` - start and up all containers with migrations
+1. `make run` - start and up all containers
+2. `make migrate_db` - run DB migrations
+
+stop containers
 - `make down` - stop all containers
 
 DB migrate

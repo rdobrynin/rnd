@@ -1,8 +1,8 @@
 run:
-	@make down && docker compose up -d && docker exec backend yarn migration:run
+	@make down && docker compose up -d
 
 migrate_db:
-	@ocker exec backend yarn migration:run
+	@docker exec backend yarn migration:run
 
 down:
 	@docker compose down --remove-orphans
