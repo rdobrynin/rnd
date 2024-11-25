@@ -5,8 +5,7 @@
 Preferred NestJS, it has more readable and predictable code, 
 also it built upon Express engine, however if needed, can be build upon Fastify in main.ts `await NestFactory.create`
 
-###
-How to launch
+### How to launch
 
 1. `docker comopose up -d`
 2. `docker exec -it backend bash` and then run `yarn migration:run`
@@ -21,6 +20,14 @@ DB migrate
 
 tests
 - `make test` - run unit tests
+
+### Local dependencies Backend
+- `cd backend` from root
+- `yarn install`
+
+### Local dependencies Frontend
+- `cd frontend` from root
+- `yarn install`
 
 ### URLs
 
