@@ -7,7 +7,4 @@ export class CoinMarketDto extends AbstractDto{
 
     @StringField()
     symbol: string;
-
-    @StringField()
-    slug: string;
 }

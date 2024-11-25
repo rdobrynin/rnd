@@ -1,12 +1,13 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { TerminusModule } from '@nestjs/terminus';
 
 import {CoinMarketService} from "./coin-market.service";
+import {TypeOrmModule} from "@nestjs/typeorm";
+import {CoinMarketEntity} from "./coin-market.entity";
 
 @Module({
     imports: [
-        TerminusModule,
+        TypeOrmModule.forFeature([CoinMarketEntity]),
         HttpModule.registerAsync({
             useFactory: () => ({
                 headers: {

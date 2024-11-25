@@ -17,8 +17,8 @@ export abstract class AbstractEntity<
   O = never,
 > implements IAbstractEntity<DTO, O>
 {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -46,7 +46,7 @@ export abstract class AbstractEntity<
 }
 
 export interface IAbstractEntity<DTO extends AbstractDto, O = never> {
-  id: number;
+  id: string;
   createdAt: Date;
   updatedAt: Date;
 

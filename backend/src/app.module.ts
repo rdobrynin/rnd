@@ -48,6 +48,19 @@ import {CoinMarketModule} from "./modules/coin-market/coin-market.module";
       isGlobal: true,
       envFilePath: ['.env'],
     }),
+    CacheModule.registerAsync({
+      imports: [],
+      useClass: undefined,
+      useExisting: undefined,
+      isGlobal: true,
+      useFactory: (configService: ConfigService) => ({
+        store: redisStore,
+        port: configService.get<number>('REDIS_PORT'),
+        host: configService.get<string>('REDIS_HOST'),
+        ttl: configService.get<number>('REDIS_TTL'),
+      }),
+      inject: [ConfigService],
+    }),
     TypeOrmModule.forRootAsync({
       useFactory() {
         return {

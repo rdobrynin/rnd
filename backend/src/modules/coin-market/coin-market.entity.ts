@@ -1,10 +1,6 @@
 import {
     Column,
     Entity,
-    Index,
-    JoinColumn,
-    ManyToMany,
-    ManyToOne,
 } from 'typeorm';
 
 import { UseDto } from '../../common/decorators/use-dto.decorators';
@@ -19,7 +15,4 @@ export class CoinMarketEntity extends AbstractEntity<CoinMarketDto> {
 
     @Column()
     symbol: string;
-
-    @Column()
-    slug: string;
 }
