@@ -12,7 +12,7 @@ export type ApiResponse = Record<string, any>;
 
 export interface IRateState {
   loading: boolean;
-  data: IRate;
+  data: IRate | null;
   readonly errors?: IError;
 }
 

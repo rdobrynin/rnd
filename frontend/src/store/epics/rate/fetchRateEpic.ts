@@ -15,7 +15,7 @@ export const fetchRateEpic: Epic<RootActions, RootActions, IApplicationState> = 
     filter(isActionOf(fetchRateAction.request)),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any,no-empty-pattern
     mergeMap(({payload}: ReturnType<any>) =>
-        fetchRate(payload.to, payload.from).pipe(
+        fetchRate(payload.from, payload.to).pipe(
         map(({ data }) => fetchRateAction.success(data)),
         catchError((error) => {
           errorHandler(error);
