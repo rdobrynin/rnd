@@ -37,3 +37,7 @@ http://localhost:8081
 #### DB Client
 http://localhost:7777
 
+
+#### Proxy Server
+http://localhost:8080/dashboard
+
