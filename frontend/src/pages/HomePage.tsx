@@ -39,24 +39,39 @@ export const HomePage: FC = () => {
         toggle(from, to);
     }, []);
 
-    function convert() {
+    function convert(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault();
         setFrom(to);
         setTo(from);
         toggle(from, to);
     }
 
-  function setRate(item: ICurrency) {
+    console.log(fromSet)
+    console.log(from)
+    function setRate(item: ICurrency) {
 
-      if (fromSet) {
-          setTo(item.symbol);
-          setFromSet(!fromSet)
-      } else {
-          setFrom(item.symbol);
-          setFromSet(true)
-      }
-
-      setFromSet(!fromSet)
-  }
+        if (!fromSet) {
+            setFrom(item.symbol);
+            setFromSet(true);
+            dispatch({
+                type: IRateActionTypes.FETCH_REQUEST,
+                payload: {
+                    from: item.symbol,
+                    to: to,
+                },
+            });
+        } else {
+            setTo(item.symbol);
+            setFromSet(false);
+            dispatch({
+                type: IRateActionTypes.FETCH_REQUEST,
+                payload: {
+                    from: from,
+                    to: item.symbol,
+                },
+            });
+        }
+    }
 
     useEffect(() => {
         const pollingCallback = () => {
@@ -109,9 +124,9 @@ export const HomePage: FC = () => {
                 <>
                     <div
                         className="d-flex flex-row bd-highlight mb-3 align-content-cente align-items-center justify-content-center my-4">
-                        <div style={{width: '100px'}}>{from}</div>
+                        <div style={{width: '100px'}}>{selectedRateData.from}</div>
                         <div>
-                            <button className='btn btn-primary mx-4' onClick={convert} disabled={selectedRateLoading}>
+                            <button className='btn btn-primary mx-4' onClick={(e) => convert(e)} disabled={selectedRateLoading}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                      className="bi bi-arrow-left-right" viewBox="0 0 16 16">
                                     <path fillRule="evenodd"
@@ -119,7 +134,7 @@ export const HomePage: FC = () => {
                                 </svg>
                             </button>
                         </div>
-                        <div style={{width: '100px', textAlign: 'right'}}>{to}</div>
+                        <div style={{width: '100px', textAlign: 'right'}}>{selectedRateData.to}</div>
                     </div>
                     <div
                         className="d-flex flex-row bd-highlight mb-3 align-content-cente align-items-center justify-content-center my-4">
