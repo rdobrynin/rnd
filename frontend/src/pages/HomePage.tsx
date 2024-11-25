@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {ICurrencyActionTypes} from "@/types/ICurrency";
 import {selectCurrencyData, selectCurrencyLoading} from "@/store/selectors/currencySelectors";
@@ -11,12 +11,15 @@ export const HomePage: FC = () => {
   const selectedCurrencyLoading = useSelector(selectCurrencyLoading);
   const selectedCurrencyData = useSelector(selectCurrencyData);
   const selectedRateData = useSelector(selectRateData);
+  const timerIdRef = useRef(null);
   const selectedRateLoading = useSelector(selectRateLoading);
+  const [isPollingEnabled, setIsPollingEnabled] = useState(true);
   useEffect(() => {
     dispatch({
       type: ICurrencyActionTypes.FETCH_REQUEST,
     });
   }, []);
+
 
   function toggle(from: string, to: string) {
     dispatch({
@@ -29,6 +32,7 @@ export const HomePage: FC = () => {
   }
 
 
+  // default USDT and TON
   useEffect(() => {
     toggle(from, to);
   }, []);
@@ -38,6 +42,36 @@ export const HomePage: FC = () => {
     setTo(from);
     toggle(from, to);
   }
+
+  useEffect(() => {
+    const pollingCallback = () => {
+      console.log('Polling...');
+      toggle(from, to);
+    };
+
+    const startPolling = () => {
+      console.log('start polling');
+      // pollingCallback(); // To immediately start fetching data
+      // Polling every 10 mins
+      // @ts-ignore
+      timerIdRef.current = setInterval(pollingCallback, 600000);
+    };
+
+    const stopPolling = () => {
+      // @ts-ignore
+      clearInterval(timerIdRef.current);
+    };
+
+    if (isPollingEnabled) {
+      startPolling();
+    } else {
+      stopPolling();
+    }
+
+    return () => {
+      stopPolling();
+    };
+  }, [isPollingEnabled]);
 
   console.log('---list of currencies---')
   console.log(selectedCurrencyData)
