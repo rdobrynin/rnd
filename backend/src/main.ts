@@ -46,10 +46,10 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-      .setTitle('Coin API')
-      .setDescription('Coin Api')
-      .setVersion('1.0')
-      .build();
+    .setTitle('Coin API')
+    .setDescription('Coin Api')
+    .setVersion('1.0')
+    .build();
 
   const document = SwaggerModule.createDocument(app, config);
 

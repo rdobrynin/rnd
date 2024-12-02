@@ -1,2 +1,0 @@
-export const LONG_POLLING_DATA = 'LONG_POLLING_DATA';
-

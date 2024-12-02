@@ -1,16 +1,19 @@
-import {DateField, NumberField, StringField} from "../../../common/decorators/field.decorators";
+import {
+  DateField,
+  NumberField,
+  StringField,
+} from '../../../common/decorators/field.decorators';
 
 export class RatePairDto {
+  @StringField()
+  from: string;
 
-    @StringField()
-    from: string;
+  @StringField()
+  to: string;
 
-    @StringField()
-    to: string;
+  @NumberField()
+  price: number;
 
-    @NumberField()
-    price: number
-
-    @DateField()
-    updated: Date;
+  @DateField()
+  updated: Date;
 }

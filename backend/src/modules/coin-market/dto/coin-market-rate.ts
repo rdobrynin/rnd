@@ -1,13 +1,16 @@
-import {DateField, ObjectField, StringField} from "../../../common/decorators/field.decorators";
+import {
+  DateField,
+  ObjectField,
+  StringField,
+} from '../../../common/decorators/field.decorators';
 
-export class CoinMarketRate{
+export class CoinMarketRate {
+  @StringField()
+  base: string;
 
-    @StringField()
-    base: string;
+  @ObjectField(() => Object)
+  results: Record<string, string>;
 
-    @ObjectField(() => Object)
-    results: Record<any, any>;
-
-    @DateField()
-    updated: Date;
+  @DateField()
+  updated: Date;
 }

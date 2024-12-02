@@ -5,6 +5,12 @@
 Preferred NestJS, it has more readable and predictable code, 
 also it built upon Express engine, however if needed, can be built upon Fastify in main.ts `await NestFactory.create`
 
+### Backend + React RTK Thunk with styles (TailwindCss)
+`git chekout main` - default branch
+
+### Backend + React RxJS middleware reducer with epics without styles (simple bootstrap)
+`git chekout feature/rxjs-middleware`
+
 ### How to launch
 
 1. `docker compose up -d`
