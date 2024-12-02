@@ -14,6 +14,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
   private static logIndex = 'logs';
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,6 +28,7 @@ export class LoggingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap((response) => {
         const responseTime = Date.now() - now;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const log: ILogData = {
           message: 'Request handled',
           method,

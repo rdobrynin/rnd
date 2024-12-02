@@ -3,8 +3,8 @@ import {
   HealthCheck,
   type HealthCheckResult,
   HealthCheckService,
-  TypeOrmHealthIndicator,
   HttpHealthIndicator,
+  TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 
 @Controller('health')

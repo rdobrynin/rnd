@@ -1,10 +1,10 @@
-import {NumberField, StringField} from "../../../common/decorators/field.decorators";
-import {AbstractDto} from "../../../common/dto/abstract.dto";
+import { StringField } from '../../../common/decorators/field.decorators';
+import { AbstractDto } from '../../../common/dto/abstract.dto';
 
-export class CoinMarketDto extends AbstractDto{
-    @StringField()
-    name: string;
+export class CoinMarketDto extends AbstractDto {
+  @StringField()
+  name: string;
 
-    @StringField()
-    symbol: string;
+  @StringField()
+  symbol: string;
 }

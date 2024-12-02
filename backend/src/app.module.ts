@@ -13,9 +13,9 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
 
 import { LoggingInterceptor } from './common/interseptors/logging.interceptor';
 import { dbConfig } from './database.config';
-import {HealthCheckerModule} from "./modules/health-checker/health-checker.module";
-import {RateModule} from "./modules/Rate/rate.module";
-import {CoinMarketModule} from "./modules/coin-market/coin-market.module";
+import { CoinMarketModule } from './modules/coin-market/coin-market.module';
+import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
+import { RateModule } from './modules/Rate/rate.module';
 
 @Module({
   imports: [
@@ -88,8 +88,8 @@ import {CoinMarketModule} from "./modules/coin-market/coin-market.module";
       },
     }),
     HealthCheckerModule,
-      CoinMarketModule,
-      RateModule,
+    CoinMarketModule,
+    RateModule,
   ],
   providers: [
     LoggingInterceptor,

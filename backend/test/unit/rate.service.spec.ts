@@ -52,9 +52,7 @@ describe('RateService', () => {
     it('should get list of crypto', async () => {
       const result = await service.getCrypto();
 
-      expect(result).toEqual({
-        "data": coinMarketPayloads
-      });
+      expect(result).toEqual(coinMarketPayloads);
     });
   });
 });

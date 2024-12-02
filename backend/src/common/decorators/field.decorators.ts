@@ -36,7 +36,7 @@ import {
   ToUpperCase,
   Trim,
 } from './transforms.decorator';
-import { IsNullable, IsTime, IsUndefinable } from './validators.decorators';
+import { IsNullable, IsUndefinable } from './validators.decorators';
 
 interface INumberFieldDecorator {
   each?: boolean;

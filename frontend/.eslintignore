@@ -1,6 +1,0 @@
-dist
-release
-devtools
-node_modules
-build/*
-src/hooks/*
